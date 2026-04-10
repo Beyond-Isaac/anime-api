@@ -1,0 +1,3 @@
+#Apaga o node_modules, mas para rodar é necessário acessar o treminal e utilizar o comando: npm intall.
+
+node_modules
