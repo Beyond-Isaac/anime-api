@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -25,7 +25,7 @@ model Genero {
 model Anime {
   id        Int      @id @default(autoincrement())
   titulo    String
-  sinopse   String
+  sinopse   String   @db.Text
   ano       Int
   estudio   String
   generoId  Int
