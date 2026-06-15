@@ -3,9 +3,8 @@
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
 ![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
-![Laragon](https://img.shields.io/badge/Laragon-0E83CD?style=for-the-badge&logo=laragon&logoColor=white)
 
 API REST para catálogo de animes de A a Z, com gerenciamento de gêneros e autenticação de usuários via JWT.
 
@@ -26,7 +25,9 @@ API REST para catálogo de animes de A a Z, com gerenciamento de gêneros e aute
 
 ## 📖 Sobre o projeto
 
-A **anime-api** é uma API REST construída com arquitetura MVC que permite gerenciar um catálogo completo de animes organizados de A a Z. Os usuários se cadastram e autenticam via JWT para acessar as rotas protegidas. Cada anime pertence a um gênero, formando uma relação entre os dois recursos.
+A **anime-api** é uma API REST construída com arquitetura MVC que permite gerenciar um catálogo completo de animes organizados de A a Z. Os usuários se cadastram e autenticam via JWT para acessar rotas protegidas. Cada anime pertence a um gênero, formando uma relação entre os recursos.
+
+O projeto utiliza SQLite como banco de dados local, tornando a configuração mais simples e portátil para desenvolvimento e testes.
 
 ---
 
@@ -36,8 +37,8 @@ A **anime-api** é uma API REST construída com arquitetura MVC que permite gere
 |---|---|
 | Node.js | Ambiente de execução JavaScript |
 | Express | Framework HTTP para criação da API |
-| Prisma ORM | Mapeamento objeto-relacional com MySQL |
-| MySQL | Banco de dados relacional |
+| Prisma ORM | ORM para modelagem e acesso ao banco |
+| SQLite | Banco de dados local baseado em arquivo |
 | bcrypt | Hash seguro de senhas |
 | jsonwebtoken | Geração e validação de tokens JWT |
 | dotenv | Gerenciamento de variáveis de ambiente |
@@ -47,27 +48,28 @@ A **anime-api** é uma API REST construída com arquitetura MVC que permite gere
 
 ## 📁 Estrutura do projeto
 
-```
+```txt
 anime-api/
 ├── prisma/
 │   ├── schema.prisma         # Definição dos models e relações
+│   ├── dev.db                # Banco SQLite local
 │   └── migrations/           # Histórico de migrations do banco
 ├── src/
-│   ├── server.js             # Entry point — configura e sobe o Express
+│   ├── server.js             # Entry point da aplicação
 │   ├── lib/
 │   │   └── prisma.js         # Instância única do Prisma Client
 │   ├── routes/
-│   │   ├── auth.routes.js    # Rotas de autenticação
-│   │   ├── genero.routes.js  # Rotas de gêneros
-│   │   └── anime.routes.js   # Rotas de animes
+│   │   ├── auth.routes.js
+│   │   ├── genero.routes.js
+│   │   └── anime.routes.js
 │   ├── controllers/
-│   │   ├── auth.controller.js    # Lógica de register e login
-│   │   ├── genero.controller.js  # Lógica do CRUD de gêneros
-│   │   └── anime.controller.js   # Lógica do CRUD de animes
+│   │   ├── auth.controller.js
+│   │   ├── genero.controller.js
+│   │   └── anime.controller.js
 │   └── middlewares/
-│       └── auth.middleware.js    # Validação do token JWT
-├── .env.example              # Exemplo de variáveis de ambiente
-├── .gitignore                # node_modules e .env ignorados
+│       └── auth.middleware.js
+├── .env.example
+├── .gitignore
 ├── README.md
 └── package.json
 ```
@@ -78,56 +80,81 @@ anime-api/
 
 ### Pré-requisitos
 
-- [Node.js](https://nodejs.org/) instalado
-- MySQL rodando localmente (recomendado: [Laragon](https://laragon.org/download))
+- Node.js instalado (recomendado: versão LTS)
+
+---
 
 ### Passo a passo
 
 ```bash
 # 1. Clone o repositório
 git clone https://github.com/seu-usuario/anime-api.git
+
+# 2. Entre na pasta
 cd anime-api
 
-# 2. Instale as dependências
+# 3. Instale as dependências
 npm install
 
-# 3. Configure as variáveis de ambiente
+# 4. Crie o arquivo .env
 cp .env.example .env
-# Edite o .env com suas credenciais (veja a seção abaixo)
 
-# 4. Crie o banco de dados no MySQL
-# No Laragon, clique em Database → New → anime_db
-# Ou via terminal MySQL:
-# CREATE DATABASE anime_db;
-
-# 5. Rode a migration para criar as tabelas
+# 5. Rode as migrations
 npx prisma migrate dev --name init
 
-# 6. Inicie o servidor em modo desenvolvimento
+# 6. Inicie o servidor
 npm run dev
 ```
 
-O servidor estará disponível em `http://localhost:3000`.
+Servidor disponível em:
+
+```txt
+http://localhost:3000
+```
 
 ---
 
 ## 🔐 Variáveis de ambiente
 
-Crie um arquivo `.env` na raiz do projeto com base no `.env.example`:
+Crie um arquivo `.env` na raiz do projeto:
 
 ```env
-DATABASE_URL="mysql://root:@localhost:3306/anime_db"
-JWT_SECRET="sua_chave_secreta_aqui"
+DATABASE_URL="file:./dev.db"
+JWT_SECRET="sua_chave_secreta"
 PORT=3000
 ```
 
 | Variável | Descrição |
 |---|---|
-| `DATABASE_URL` | String de conexão com o MySQL |
-| `JWT_SECRET` | Chave secreta para assinar os tokens JWT |
-| `PORT` | Porta onde o servidor vai rodar |
+| `DATABASE_URL` | Caminho do banco SQLite |
+| `JWT_SECRET` | Chave usada para assinar os tokens |
+| `PORT` | Porta do servidor |
 
-> ⚠️ Nunca commite o arquivo `.env` com dados reais no repositório.
+> ⚠️ Nunca envie o arquivo `.env` para o GitHub.
+
+---
+
+## 🗄️ Banco de dados
+
+O projeto utiliza SQLite com Prisma ORM.
+
+Após executar a migration:
+
+```bash
+npx prisma migrate dev --name init
+```
+
+o banco será criado automaticamente em:
+
+```txt
+prisma/dev.db
+```
+
+Para visualizar e editar os dados graficamente:
+
+```bash
+npx prisma studio
+```
 
 ---
 
@@ -135,9 +162,12 @@ PORT=3000
 
 ### 🔓 Auth — público
 
-#### `POST /auth/register` — Cadastrar usuário
+#### `POST /auth/register`
+
+Cadastrar usuário.
 
 **Body:**
+
 ```json
 {
   "nome": "Isaac",
@@ -146,23 +176,14 @@ PORT=3000
 }
 ```
 
-**Resposta `201`:**
-```json
-{
-  "mensagem": "Usuário cadastrado com sucesso.",
-  "usuario": {
-    "id": 1,
-    "nome": "Isaac",
-    "email": "isaac@email.com"
-  }
-}
-```
-
 ---
 
-#### `POST /auth/login` — Fazer login
+#### `POST /auth/login`
+
+Realizar login.
 
 **Body:**
+
 ```json
 {
   "email": "isaac@email.com",
@@ -170,217 +191,111 @@ PORT=3000
 }
 ```
 
-**Resposta `200`:**
-```json
-{
-  "mensagem": "Login realizado com sucesso.",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-}
-```
+---
 
-> O token retornado deve ser enviado no header `Authorization: Bearer <token>` em todas as rotas protegidas.
+### 🔒 Gêneros — requer JWT
+
+#### `GET /generos`
+
+Listar gêneros.
 
 ---
 
-### 🔒 Gêneros — requer token JWT
+#### `GET /generos/:id`
 
-#### `GET /generos` — Listar todos os gêneros
-
-**Resposta `200`:**
-```json
-[
-  { "id": 1, "nome": "Shonen", "criadoEm": "2024-01-01T00:00:00.000Z" },
-  { "id": 2, "nome": "Seinen", "criadoEm": "2024-01-01T00:00:00.000Z" }
-]
-```
+Buscar gênero por ID.
 
 ---
 
-#### `GET /generos/:id` — Buscar gênero por ID
+#### `POST /generos`
 
-**Resposta `200`:**
-```json
-{
-  "id": 1,
-  "nome": "Shonen",
-  "criadoEm": "2024-01-01T00:00:00.000Z",
-  "animes": [
-    { "id": 1, "titulo": "Naruto", "ano": 2002 }
-  ]
-}
-```
+Criar gênero.
 
 ---
 
-#### `POST /generos` — Criar gênero
+#### `PUT /generos/:id`
 
-**Body:**
-```json
-{
-  "nome": "Shonen"
-}
-```
-
-**Resposta `201`:**
-```json
-{
-  "id": 1,
-  "nome": "Shonen",
-  "criadoEm": "2024-01-01T00:00:00.000Z"
-}
-```
+Atualizar gênero.
 
 ---
 
-#### `PUT /generos/:id` — Atualizar gênero
+#### `DELETE /generos/:id`
 
-**Body:**
-```json
-{
-  "nome": "Shonen Atualizado"
-}
-```
-
-**Resposta `200`:**
-```json
-{
-  "id": 1,
-  "nome": "Shonen Atualizado",
-  "criadoEm": "2024-01-01T00:00:00.000Z"
-}
-```
+Remover gênero.
 
 ---
 
-#### `DELETE /generos/:id` — Deletar gênero
+### 🔒 Animes — requer JWT
 
-**Resposta `200`:**
-```json
-{
-  "mensagem": "Gênero deletado com sucesso."
-}
-```
+#### `GET /animes`
+
+Listar animes em ordem alfabética.
 
 ---
 
-### 🔒 Animes — requer token JWT
+#### `GET /animes?letra=N`
 
-#### `GET /animes` — Listar todos os animes em ordem alfabética
-
-**Resposta `200`:**
-```json
-[
-  {
-    "id": 2,
-    "titulo": "Attack on Titan",
-    "sinopse": "Humanidade luta pela sobrevivência contra gigantes.",
-    "ano": 2013,
-    "estudio": "Wit Studio",
-    "generoId": 1,
-    "genero": { "id": 1, "nome": "Shonen" }
-  }
-]
-```
+Filtrar animes pela letra inicial.
 
 ---
 
-#### `GET /animes?letra=N` — Filtrar animes pela letra inicial (catálogo A-Z)
+#### `GET /animes/:id`
 
-Retorna apenas os animes cujo título começa com a letra informada, em ordem alfabética.
-
-**Exemplo:** `GET /animes?letra=N` retorna Naruto e Naruto Shippuden.
+Buscar anime por ID.
 
 ---
 
-#### `GET /animes/:id` — Buscar anime por ID
+#### `POST /animes`
 
-**Resposta `200`:**
-```json
-{
-  "id": 1,
-  "titulo": "Naruto",
-  "sinopse": "Um jovem ninja que sonha em se tornar Hokage.",
-  "ano": 2002,
-  "estudio": "Pierrot",
-  "generoId": 1,
-  "genero": { "id": 1, "nome": "Shonen" }
-}
-```
+Criar anime.
 
 ---
 
-#### `POST /animes` — Criar anime
+#### `PUT /animes/:id`
 
-**Body:**
-```json
-{
-  "titulo": "Naruto",
-  "sinopse": "Um jovem ninja que sonha em se tornar Hokage.",
-  "ano": 2002,
-  "estudio": "Pierrot",
-  "generoId": 1
-}
-```
-
-**Resposta `201`:**
-```json
-{
-  "id": 1,
-  "titulo": "Naruto",
-  "sinopse": "Um jovem ninja que sonha em se tornar Hokage.",
-  "ano": 2002,
-  "estudio": "Pierrot",
-  "generoId": 1,
-  "genero": { "id": 1, "nome": "Shonen" }
-}
-```
+Atualizar anime.
 
 ---
 
-#### `PUT /animes/:id` — Atualizar anime
+#### `DELETE /animes/:id`
 
-**Body** (envie apenas os campos que deseja atualizar):
-```json
-{
-  "titulo": "Naruto Clássico",
-  "ano": 2002
-}
-```
-
-**Resposta `200`:** retorna o anime atualizado com os dados do gênero.
-
----
-
-#### `DELETE /animes/:id` — Deletar anime
-
-**Resposta `200`:**
-```json
-{
-  "mensagem": "Anime deletado com sucesso."
-}
-```
+Deletar anime.
 
 ---
 
 ## 📐 Regras de negócio
 
-- Não é possível cadastrar dois usuários com o mesmo email
-- Senhas são armazenadas com hash bcrypt — nunca em texto puro
-- Todas as rotas de `/animes` e `/generos` exigem token JWT válido
-- Não é possível deletar um gênero que possui animes cadastrados
-- Não é possível criar um anime com um `generoId` inexistente
-- A listagem de animes é sempre retornada em ordem alfabética (A-Z)
-- O filtro `?letra=` aceita tanto maiúscula quanto minúscula
+- Não é permitido cadastrar emails duplicados
+- Senhas são criptografadas com bcrypt
+- Rotas protegidas exigem JWT válido
+- Não é possível criar anime com gênero inexistente
+- Não é possível deletar gênero vinculado a animes
+- A listagem de animes é ordenada alfabeticamente
+- O filtro `?letra=` não diferencia maiúsculas de minúsculas
 
 ---
 
 ## 📊 Status codes
 
-| Código | Significado | Quando acontece |
-|---|---|---|
-| `200` | OK | Requisição bem-sucedida |
-| `201` | Created | Recurso criado com sucesso |
-| `400` | Bad Request | Campos obrigatórios ausentes ou regra de negócio violada |
-| `401` | Unauthorized | Token ausente, inválido ou expirado |
-| `404` | Not Found | Recurso não encontrado pelo ID informado |
-| `500` | Internal Server Error | Erro inesperado no servidor |
+| Código | Significado |
+|---|---|
+| `200` | OK |
+| `201` | Created |
+| `400` | Bad Request |
+| `401` | Unauthorized |
+| `404` | Not Found |
+| `500` | Internal Server Error |
+
+---
+
+## 🛠️ Futuras melhorias
+
+- Paginação
+- Upload de imagens
+- Favoritos
+- Avaliações
+- Swagger/OpenAPI
+- Docker
+- Deploy em produção
+- Busca avançada
+- Sistema de temporadas
