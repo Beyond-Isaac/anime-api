@@ -3,7 +3,7 @@
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
 ![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white)
-![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
 
 API REST para catálogo de animes de A a Z, com gerenciamento de gêneros e autenticação de usuários via JWT.
@@ -27,7 +27,7 @@ API REST para catálogo de animes de A a Z, com gerenciamento de gêneros e aute
 
 A **anime-api** é uma API REST construída com arquitetura MVC que permite gerenciar um catálogo completo de animes organizados de A a Z. Os usuários se cadastram e autenticam via JWT para acessar rotas protegidas. Cada anime pertence a um gênero, formando uma relação entre os recursos.
 
-O projeto utiliza SQLite como banco de dados local, tornando a configuração mais simples e portátil para desenvolvimento e testes.
+O projeto utiliza MySQL como banco de dados relacional, acessado através do Prisma ORM. 
 
 ---
 
@@ -38,7 +38,7 @@ O projeto utiliza SQLite como banco de dados local, tornando a configuração ma
 | Node.js | Ambiente de execução JavaScript |
 | Express | Framework HTTP para criação da API |
 | Prisma ORM | ORM para modelagem e acesso ao banco |
-| SQLite | Banco de dados local baseado em arquivo |
+| MySQL | Banco de dados relacional |
 | bcrypt | Hash seguro de senhas |
 | jsonwebtoken | Geração e validação de tokens JWT |
 | dotenv | Gerenciamento de variáveis de ambiente |
@@ -51,9 +51,8 @@ O projeto utiliza SQLite como banco de dados local, tornando a configuração ma
 ```txt
 anime-api/
 ├── prisma/
-│   ├── schema.prisma         # Definição dos models e relações
-│   ├── dev.db                # Banco SQLite local
-│   └── migrations/           # Histórico de migrations do banco
+│   ├── schema.prisma
+│   └── migrations/
 ├── src/
 │   ├── server.js             # Entry point da aplicação
 │   ├── lib/
@@ -119,16 +118,16 @@ http://localhost:3000
 Crie um arquivo `.env` na raiz do projeto:
 
 ```env
-DATABASE_URL="file:./dev.db"
+DATABASE_URL="mysql://usuario:senha@localhost:3306/anime_api"
 JWT_SECRET="sua_chave_secreta"
 PORT=3000
 ```
 
 | Variável | Descrição |
 |---|---|
-| `DATABASE_URL` | Caminho do banco SQLite |
-| `JWT_SECRET` | Chave usada para assinar os tokens |
-| `PORT` | Porta do servidor |
+| DATABASE_URL | String de conexão do MySQL |
+| JWT_SECRET | Chave usada para assinar os tokens |
+| PORT | Porta do servidor |
 
 > ⚠️ Nunca envie o arquivo `.env` para o GitHub.
 
