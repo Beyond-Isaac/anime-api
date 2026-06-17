@@ -4,9 +4,9 @@ import authMiddleware from '../middlewares/auth.middleware.js'
 
 const router = express.Router()
 
-// GET /animes?letra=A → filtra por letra (catálogo A-Z)
-router.get('/', authMiddleware, listar)
-router.get('/:id', authMiddleware, buscarPorId)
+// GET /animes?letra=A → filtra por letra (catálogo A-Z) — rota pública
+router.get('/', listar)
+router.get('/:id', buscarPorId)
 router.post('/', authMiddleware, criar)
 router.put('/:id', authMiddleware, atualizar)
 router.delete('/:id', authMiddleware, deletar)

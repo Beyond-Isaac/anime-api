@@ -1,10 +1,16 @@
 import 'dotenv/config'
 import express from 'express'
+import cors from 'cors'
 import authRoutes from './routes/auth.routes.js'
 import generoRoutes from './routes/genero.routes.js'
 import animeRoutes from './routes/anime.routes.js'
 
 const app = express()
+
+// Por enquanto libera qualquer origem (facilita o dev local e os testes do front).
+// Quando o animu.wiki estiver com domínio fixo na Vercel, troque por:
+// app.use(cors({ origin: 'https://seu-dominio.vercel.app' }))
+app.use(cors())
 
 app.use(express.json())
 

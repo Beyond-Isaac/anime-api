@@ -4,8 +4,9 @@ import authMiddleware from '../middlewares/auth.middleware.js'
 
 const router = express.Router()
 
-router.get('/', authMiddleware, listar)
-router.get('/:id', authMiddleware, buscarPorId)
+// rotas de leitura públicas (catálogo)
+router.get('/', listar)
+router.get('/:id', buscarPorId)
 router.post('/', authMiddleware, criar)
 router.put('/:id', authMiddleware, atualizar)
 router.delete('/:id', authMiddleware, deletar)
